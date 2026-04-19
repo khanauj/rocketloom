@@ -816,7 +816,7 @@ async function sendMsg(text) {
   showTyping();
 
   try {
-    const res  = await fetch('/api/chat', {
+    const res  = await fetch('https://rocketloom.onrender.com/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ messages: chatHistory })
@@ -935,7 +935,7 @@ async function submitForm(e) {
     btn.textContent = 'SENDING...';
 
     try {
-        const res  = await fetch('/api/contact', {
+        const res  = await fetch('https://rocketloom.onrender.com/api/contact', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, phone, plan })

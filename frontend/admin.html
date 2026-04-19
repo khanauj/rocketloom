@@ -101,8 +101,8 @@ function logout() {
 
 async function loadData() {
   const [leadsRes, statsRes] = await Promise.all([
-    fetch(`/api/leads?pass=${password}`),
-    fetch(`/api/stats?pass=${password}`)
+    fetch(`https://rocketloom.onrender.com/api/leads?pass=${password}`),
+    fetch(`https://rocketloom.onrender.com/api/stats?pass=${password}`)
   ]);
   if (leadsRes.status === 401) {
     document.getElementById('login-err').classList.remove('hidden');
@@ -156,7 +156,7 @@ function renderTable() {
 
 async function deleteLead(id) {
   if (!confirm('Delete this lead?')) return;
-  await fetch(`/api/leads/${id}?pass=${password}`, { method: 'DELETE' });
+  await fetch(`https://rocketloom.onrender.com/api/leads/${id}?pass=${password}`, { method: 'DELETE' });
   allLeads = allLeads.filter(l => l.id !== id);
   renderTable();
 }

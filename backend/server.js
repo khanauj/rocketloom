@@ -106,7 +106,7 @@ STRICT RULES:
 - When you have BOTH name AND phone number from the user, append this JSON on a new line at the very end of your message (do NOT show it to user, it will be hidden): {"__lead__":true,"name":"THEIR_NAME","phone":"THEIR_PHONE","plan":"RECOMMENDED_PLAN"}
 - Only append the JSON once, when you have both name and phone confirmed`;
 
-app.use(cors());
+app.use(cors({ origin: ['https://rocketloomak.netlify.app', 'http://localhost:3000'] }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../frontend')));
 
