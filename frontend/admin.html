@@ -20,7 +20,7 @@
     <input id="pass-input" type="password" placeholder="Password"
       class="w-full border-2 border-black p-3 font-bold mb-4 outline-none"
       onkeydown="if(event.key==='Enter')login()"/>
-    <button onclick="login()"
+    <button id="login-btn" onclick="login()"
       class="w-full bg-black text-white py-3 font-black uppercase hover:bg-gray-800 transition-colors">
       LOGIN →
     </button>
@@ -90,7 +90,10 @@ let allLeads = [];
 
 function login() {
   password = document.getElementById('pass-input').value;
-  loadData();
+  const btn = document.getElementById('login-btn');
+  btn.textContent = 'CONNECTING...';
+  btn.disabled = true;
+  loadData().finally(() => { btn.textContent = 'LOGIN →'; btn.disabled = false; });
 }
 function logout() {
   password = '';
@@ -100,12 +103,22 @@ function logout() {
 }
 
 async function loadData() {
-  const [leadsRes, statsRes] = await Promise.all([
-    fetch(`https://rocketloom.onrender.com/api/leads?pass=${password}`),
-    fetch(`https://rocketloom.onrender.com/api/stats?pass=${password}`)
-  ]);
+  const errEl = document.getElementById('login-err');
+  errEl.classList.add('hidden');
+  let leadsRes, statsRes;
+  try {
+    [leadsRes, statsRes] = await Promise.all([
+      fetch(`https://rocketloom.onrender.com/api/leads?pass=${password}`),
+      fetch(`https://rocketloom.onrender.com/api/stats?pass=${password}`)
+    ]);
+  } catch {
+    errEl.textContent = 'Cannot reach server. Render may be waking up — wait 30s and try again.';
+    errEl.classList.remove('hidden');
+    return;
+  }
   if (leadsRes.status === 401) {
-    document.getElementById('login-err').classList.remove('hidden');
+    errEl.textContent = 'Wrong password.';
+    errEl.classList.remove('hidden');
     return;
   }
   document.getElementById('login-err').classList.add('hidden');
