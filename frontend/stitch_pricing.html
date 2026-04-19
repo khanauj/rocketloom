@@ -237,8 +237,8 @@
 </p>
 </div>
 <div class="flex flex-col gap-4 mb-12">
-<button onclick="scrollTo('contact')" class="neo-brutal-btn w-full font-headline font-black py-5 text-xl uppercase italic">
-                Get Your Site  when you want →
+<button onclick="openLeadModal()" class="neo-brutal-btn w-full font-headline font-black py-5 text-xl uppercase italic">
+                Get Your Site &rarr;
             </button>
 </div>
 <!-- Mockups with Neo-Brutal styling -->
@@ -564,6 +564,18 @@
 <div>
 <p class="text-[9px] text-brand-red font-black uppercase tracking-widest mb-0.5">Luxury / E-Commerce</p>
 <h4 class="text-sm font-black uppercase italic">Verve Perfume</h4>
+</div>
+<span class="text-[9px] font-black uppercase italic text-brand-blue">View Live →</span>
+</div>
+</a>
+<a href="https://skillences.netlify.app/" target="_blank" class="col-span-2 neo-brutal-card overflow-hidden group block">
+<div class="aspect-[16/7] relative">
+<img class="w-full h-full object-cover object-top" src="skillences.png" alt="Skillences AI career platform"/>
+</div>
+<div class="p-3 bg-white border-t-4 border-black flex justify-between items-center">
+<div>
+<p class="text-[9px] text-brand-blue font-black uppercase tracking-widest mb-0.5">AI / SaaS Platform</p>
+<h4 class="text-sm font-black uppercase italic">Skillences</h4>
 </div>
 <span class="text-[9px] font-black uppercase italic text-brand-blue">View Live →</span>
 </div>
@@ -950,5 +962,98 @@ async function submitForm(e) {
     btn.disabled = false;
     btn.textContent = 'SEND REQUEST →';
 }
+
+// ── Lead Modal ─────────────────────────────────────────────
+function openLeadModal() {
+  document.getElementById('lead-modal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('lead-name').focus(), 100);
+}
+function closeLeadModal() {
+  document.getElementById('lead-modal').classList.add('hidden');
+  document.body.style.overflow = '';
+  document.getElementById('lead-form').reset();
+  document.getElementById('lead-error').classList.add('hidden');
+}
+function submitLeadModal(e) {
+  e.preventDefault();
+  const name     = document.getElementById('lead-name').value.trim();
+  const phone    = document.getElementById('lead-phone').value.trim();
+  const business = document.getElementById('lead-business').value;
+  const plan     = document.getElementById('lead-plan').value;
+  const errEl    = document.getElementById('lead-error');
+
+  const cleaned = phone.replace(/\D/g, '');
+  if (!/^[6-9]\d{9}$/.test(cleaned)) {
+    errEl.textContent = 'Enter a valid 10-digit Indian mobile number.';
+    errEl.classList.remove('hidden');
+    return;
+  }
+  errEl.classList.add('hidden');
+
+  const msg = `Hi Rocketloom! 🚀\n\nName: ${name}\nPhone: ${cleaned}\nBusiness: ${business}\nInterested in: ${plan}\n\nPlease get in touch!`;
+  const waUrl = `https://wa.me/919911134078?text=${encodeURIComponent(msg)}`;
+  window.open(waUrl, '_blank');
+  closeLeadModal();
+  showToast("Opening WhatsApp — we'll call you in 30 mins!");
+}
 </script>
+
+<!-- Lead Capture Modal -->
+<div id="lead-modal" class="hidden fixed inset-0 z-[200] flex items-center justify-center p-4" style="background:rgba(0,0,0,0.7);">
+  <div class="neo-brutal-card bg-white w-full max-w-md relative" style="max-height:90vh;overflow-y:auto;">
+    <!-- Header -->
+    <div class="bg-brand-red text-white px-6 py-4 border-b-4 border-black flex items-center justify-between">
+      <div>
+        <div class="font-headline font-black text-xl uppercase italic">Get Your Site 🚀</div>
+        <div class="text-xs font-bold opacity-80">We'll call you within 30 minutes</div>
+      </div>
+      <button onclick="closeLeadModal()" class="text-white/70 hover:text-white font-black text-2xl leading-none">✕</button>
+    </div>
+    <!-- Form -->
+    <form id="lead-form" onsubmit="submitLeadModal(event)" class="p-6 space-y-4">
+      <div>
+        <label class="block text-xs font-black uppercase mb-1">Your Name *</label>
+        <input id="lead-name" type="text" required placeholder="Rahul Sharma"
+          class="w-full border-4 border-black p-3 font-bold outline-none focus:translate-x-0.5 focus:translate-y-0.5 transition-all placeholder:text-black/30"/>
+      </div>
+      <div>
+        <label class="block text-xs font-black uppercase mb-1">Phone Number *</label>
+        <input id="lead-phone" type="tel" required placeholder="9876543210"
+          class="w-full border-4 border-black p-3 font-bold outline-none focus:translate-x-0.5 focus:translate-y-0.5 transition-all placeholder:text-black/30"/>
+      </div>
+      <div>
+        <label class="block text-xs font-black uppercase mb-1">Business Type</label>
+        <select id="lead-business" class="w-full border-4 border-black p-3 font-bold outline-none bg-white">
+          <option value="Not specified">Select your business...</option>
+          <option>Salon / Spa</option>
+          <option>Restaurant / Cafe</option>
+          <option>Clinic / Hospital</option>
+          <option>Retail Shop</option>
+          <option>E-Commerce</option>
+          <option>Real Estate</option>
+          <option>Education / Coaching</option>
+          <option>Gym / Fitness</option>
+          <option>Portfolio / Personal</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-black uppercase mb-1">Interested Plan</label>
+        <select id="lead-plan" class="w-full border-4 border-black p-3 font-bold outline-none bg-white">
+          <option value="Not decided">Not decided yet</option>
+          <option value="Basic Plan - ₹3333">Basic Plan — ₹3,333</option>
+          <option value="Classic Plan - ₹4444">Classic Plan — ₹4,444</option>
+          <option value="Premium Plan - ₹6666">Premium Plan — ₹6,666</option>
+        </select>
+      </div>
+      <div id="lead-error" class="hidden bg-red-100 border-2 border-red-500 text-red-700 text-xs font-black px-3 py-2"></div>
+      <button type="submit" class="neo-brutal-btn w-full font-headline font-black py-4 text-lg uppercase italic mt-2">
+        Send via WhatsApp →
+      </button>
+      <p class="text-center text-[10px] font-bold text-black/40 uppercase">Your info is safe. No spam, ever.</p>
+    </form>
+  </div>
+</div>
+
 </body></html>

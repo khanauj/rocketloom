@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors    = require('cors');
 const path    = require('path');
@@ -5,14 +6,14 @@ const fs      = require('fs');
 const https   = require('https');
 
 const app  = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // ── Config ────────────────────────────────────────────────
-const WHATSAPP_NUMBER = '919911134078';
-const ADMIN_PASSWORD  = 'rocketloom2024';
+const WHATSAPP_NUMBER = process.env.WHATSAPP_NUMBER;
+const ADMIN_PASSWORD  = process.env.ADMIN_PASSWORD;
 const DB_FILE         = path.join(__dirname, 'leads.json');
-const NVIDIA_API_KEY  = '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';
-const NVIDIA_MODEL    = 'meta/llama-3.3-70b-instruct';
+const NVIDIA_API_KEY  = process.env.NVIDIA_API_KEY;
+const NVIDIA_MODEL    = process.env.NVIDIA_MODEL;
 // ─────────────────────────────────────────────────────────
 
 // ── JSON "DB" helpers ─────────────────────────────────────
@@ -107,7 +108,7 @@ STRICT RULES:
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // ── POST /api/chat ────────────────────────────────────────
 app.post('/api/chat', async (req, res) => {
@@ -210,8 +211,8 @@ app.delete('/api/leads/:id', (req, res) => {
 });
 
 // ── Pages ─────────────────────────────────────────────────
-app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'admin.html')));
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'stitch_pricing.html')));
+app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, '../frontend/admin.html')));
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, '../frontend/stitch_pricing.html')));
 
 app.listen(PORT, () => {
   console.log(`\n🚀 Rocketloom: http://localhost:${PORT}`);
