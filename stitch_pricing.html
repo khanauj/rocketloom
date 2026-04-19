@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Rocketloom | Delhi's #1 Professional Web Development</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+<script src="laptop_data.js"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "brand-red": "#E11D21",
+                        "brand-blue": "#4D61FF",
+                        "surface": "#FFFFFF",
+                        "background": "#F5F5F5",
+                        "on-surface": "#000000",
+                        "on-surface-variant": "#444444",
+                        "outline": "#000000",
+                        "neon-green": "#39FF14",
+                        "neon-pink": "#FF00FF"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "2px",
+                        "xl": "4px",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+        }
+        .neo-brutal-btn {
+            background-color: #4D61FF;
+            color: white;
+            border: 3px solid black;
+            box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+        }
+        .neo-brutal-btn:hover {
+            transform: translate(-2px, -2px) scale(1.03);
+            box-shadow: 7px 7px 0px 0px rgba(0,0,0,1);
+            filter: brightness(1.1);
+        }
+        .neo-brutal-btn:active {
+            box-shadow: 0px 0px 0px 0px rgba(0,0,0,1);
+            transform: translate(4px, 4px) scale(0.97);
+            filter: brightness(0.9);
+            transition: all 0.07s ease;
+        }
+        @keyframes btn-pop {
+            0%   { transform: scale(1); }
+            40%  { transform: scale(0.93); }
+            70%  { transform: scale(1.06); }
+            100% { transform: scale(1); }
+        }
+        .btn-clicked {
+            animation: btn-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        button, [role="button"] {
+            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        box-shadow 0.15s ease,
+                        filter 0.15s ease;
+            cursor: pointer;
+        }
+        button:not(.neo-brutal-btn):hover {
+            transform: translate(-1px, -1px) scale(1.02);
+            filter: brightness(1.08);
+        }
+        button:not(.neo-brutal-btn):active {
+            transform: translate(2px, 2px) scale(0.96);
+            filter: brightness(0.9);
+            transition: all 0.07s ease;
+        }
+        .neo-brutal-card {
+            background-color: white;
+            border: 3px solid black;
+            box-shadow: 6px 6px 0px 0px rgba(0,0,0,1);
+        }
+        .grid-bg {
+            background-image: 
+                linear-gradient(to right, #e5e5e5 1px, transparent 1px),
+                linear-gradient(to bottom, #e5e5e5 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .scissored-divider {
+            height: 1px;
+            background-image: linear-gradient(to right, #000 50%, transparent 50%);
+            background-size: 10px 1px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .scissored-divider .scissor-icon {
+            background: white;
+            padding: 0 10px;
+            font-size: 18px;
+        }
+        .diagonal-stripe {
+            background: repeating-linear-gradient(
+                -45deg,
+                rgba(0,0,0,0.05),
+                rgba(0,0,0,0.05) 10px,
+                transparent 10px,
+                transparent 20px
+            );
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .chat-bubble-shadow {
+            box-shadow: 6px 6px 0px 0px rgba(0,0,0,1);
+        }
+
+        /* ── Chat panel responsive ── */
+        @media (max-width: 400px) {
+            #chat-panel {
+                right: 8px !important;
+                left: 8px !important;
+                width: auto !important;
+                bottom: 7rem !important;
+            }
+        }
+        @media (max-width: 640px) {
+            #chat-panel { width: calc(100vw - 24px); right: 8px; }
+        }
+
+        /* ── Paper Plane fly-in ── */
+        @keyframes plane-fly {
+            0%   { transform: translate(0, 0) scale(0.7); opacity: 0; }
+            8%   { opacity: 1; transform: translate(8vw, -8vh) scale(1); }
+            50%  { transform: translate(50vw, -50vh) scale(1.05); }
+            92%  { opacity: 1; }
+            100% { transform: translate(115vw, -115vh) scale(0.8); opacity: 0; }
+        }
+        #plane-anim {
+            position: fixed;
+            bottom: -440px;
+            left: -360px;
+            width: min(440px, 60vw);
+            height: min(440px, 60vw);
+            z-index: 9999;
+            pointer-events: none;
+            animation: plane-fly 2.6s cubic-bezier(0.4, 0, 0.2, 1) 1s 1 forwards;
+            filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.35));
+        }
+        #plane-anim model-viewer {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            --poster-color: transparent;
+            transform: rotate(-45deg);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body overflow-x-hidden">
+
+<!-- Paper Plane fly-in -->
+<div id="plane-anim">
+    <model-viewer
+        src="paper_plane.glb"
+        camera-orbit="90deg 90deg 85%"
+        exposure="1.4"
+        shadow-intensity="0"
+        interaction-prompt="none"
+        style="background:transparent;--poster-color:transparent;">
+    </model-viewer>
+</div>
+
+<!-- Navbar -->
+<nav class="fixed top-0 w-full z-50 bg-white border-b-4 border-black">
+<div class="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4">
+<div class="flex justify-between items-center">
+  <img alt="Rocketloom logo" class="w-[130px] md:w-[180px] h-auto object-contain" src="logo.svg"/>
+  <!-- Desktop nav -->
+  <div class="hidden md:flex items-center gap-8 font-headline font-bold text-brand-red uppercase text-sm">
+    <a class="hover:underline decoration-2 underline-offset-4" href="#services">Services</a>
+    <a class="hover:underline decoration-2 underline-offset-4" href="#pricing">Pricing</a>
+    <a class="hover:underline decoration-2 underline-offset-4" href="#work">Our Work</a>
+  </div>
+  <!-- Right side actions -->
+  <div class="flex items-center gap-2">
+    <button onclick="scrollTo('contact')" class="bg-brand-blue text-white border-2 border-black font-headline font-bold px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-y-[1px] active:translate-x-[1px] active:shadow-none transition-all uppercase italic">CONTACT</button>
+    <!-- Hamburger (mobile only) -->
+    <button id="hamburger-btn" onclick="toggleMobileMenu()" class="md:hidden flex flex-col justify-center gap-[5px] w-9 h-9 border-2 border-black p-1.5 bg-white" aria-label="Menu">
+      <span id="hb1" class="w-full h-0.5 bg-black block transition-all duration-300 origin-center"></span>
+      <span id="hb2" class="w-full h-0.5 bg-black block transition-all duration-300"></span>
+      <span id="hb3" class="w-full h-0.5 bg-black block transition-all duration-300 origin-center"></span>
+    </button>
+  </div>
+</div>
+<!-- Mobile dropdown -->
+<div id="mobile-menu" class="hidden md:hidden pt-3 pb-1 border-t-2 border-black/20 mt-3">
+  <div class="flex flex-col font-headline font-bold text-brand-red uppercase text-sm">
+    <a class="py-3 px-1 border-b border-black/10 hover:text-black transition-colors" href="#services" onclick="closeMobileMenu()">Services</a>
+    <a class="py-3 px-1 border-b border-black/10 hover:text-black transition-colors" href="#pricing" onclick="closeMobileMenu()">Pricing</a>
+    <a class="py-3 px-1 border-b border-black/10 hover:text-black transition-colors" href="#work" onclick="closeMobileMenu()">Our Work</a>
+    <a class="py-3 px-1 hover:text-black transition-colors" href="#contact" onclick="closeMobileMenu()">Contact</a>
+  </div>
+</div>
+</div>
+</nav>
+<!-- Hero Section -->
+<section id="hero" class="relative pt-28 md:pt-40 pb-12 md:pb-20 px-4 md:px-6 min-h-screen flex flex-col justify-center overflow-hidden bg-brand-red">
+<div class="absolute inset-0 diagonal-stripe opacity-20"></div>
+<div class="relative z-10 max-w-2xl mx-auto text-center">
+<span class="inline-block px-4 py-1 border-2 border-black bg-white text-black text-xs font-black tracking-widest uppercase mb-6 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+            PREMIUM DESIGN STUDIO
+        </span>
+<h1 class="font-headline text-5xl md:text-7xl font-black tracking-tighter leading-none mb-6 text-white uppercase italic">talented<div> <span class="bg-black text-white px-2">Boldest</span> Digital Crafts
+        </div></h1>
+<div class="bg-white border-4 border-black p-6 mb-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+<p class="text-xl text-black font-bold leading-tight">
+                Premium 5-page site + hosting for just <br/>
+<span class="text-brand-blue font-black text-3xl">₹3,333 one-time</span> <br/>
+<span class="text-sm">+ ₹599/mo maintenance</span>
+</p>
+</div>
+<div class="flex flex-col gap-4 mb-12">
+<button onclick="scrollTo('contact')" class="neo-brutal-btn w-full font-headline font-black py-5 text-xl uppercase italic">
+                Get Your Site  when you want →
+            </button>
+</div>
+<!-- Mockups with Neo-Brutal styling -->
+<!-- 3D Model Section -->
+<!-- 3D Model Section (Floating) -->
+<div class="relative w-full h-[240px] sm:h-[340px] md:h-[450px] mt-4 md:mt-8 flex justify-center items-center overflow-visible">
+    <model-viewer
+        id="laptop-viewer"
+        src=""
+        alt="New 3D Laptop Model"
+        auto-rotate
+        auto-rotate-delay="0"
+        rotation-per-second="45deg"
+        ar
+        shadow-intensity="2" 
+        exposure="1"
+        environment-image="neutral"
+        camera-orbit="45deg 75deg 81%"
+        interaction-prompt="none"
+        style="width: 100%; height: 100%;">
+        <div slot="poster" class="flex items-center justify-center h-full w-full font-black uppercase text-sm italic text-white/40">
+            <span>LOADING 3D EXPERIENCE...</span>
+        </div>
+    </model-viewer>
+</div>
+</div>
+</section>
+<!-- Divider -->
+<div class="scissored-divider bg-white py-10">
+<span class="material-symbols-outlined scissor-icon text-black">content_cut</span>
+</div>
+<!-- Why Choose Us -->
+<section id="services" class="py-12 md:py-20 px-4 md:px-6 bg-white grid-bg">
+<h2 class="font-headline text-3xl md:text-4xl font-black mb-8 md:mb-12 text-center uppercase italic underline decoration-brand-blue decoration-8">Why Delhi Trusts Us</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+<div class="neo-brutal-card p-5 md:p-8 group">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-5xl text-brand-blue">payments</span>
+<div class="text-6xl font-black text-black/10">01</div>
+</div>
+<h3 class="text-2xl font-black uppercase mb-2">Lowest Price</h3>
+<p class="text-on-surface-variant font-bold leading-tight">No hidden costs. We beat any local quote by 20% guaranteed.</p>
+</div>
+<div class="neo-brutal-card p-8 border-brand-red group">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-5xl text-brand-red">code</span>
+<div class="text-6xl font-black text-black/10">02</div>
+</div>
+<h3 class="text-2xl font-black uppercase mb-2">Real Developer</h3>
+<p class="text-on-surface-variant font-bold leading-tight">No drag-and-drop bots. Hand-coded for speed and SEO ranking.</p>
+</div>
+<div class="neo-brutal-card p-5 md:p-8 group">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-5xl text-brand-blue">speed</span>
+<div class="text-6xl font-black text-black/10">03</div>
+</div>
+<h3 class="text-2xl font-black uppercase mb-2">48-Hour Delivery</h3>
+<p class="text-on-surface-variant font-bold leading-tight">From first call to live domain in just 2 business days.</p>
+</div>
+</div>
+</section>
+<!-- What Your Site Includes -->
+<section id="includes" class="py-12 md:py-20 px-4 md:px-6 bg-white border-y-4 border-black">
+<h2 class="font-headline text-3xl font-black mb-8 uppercase italic">Everything <span class="bg-brand-red text-white px-2">Bundled</span></h2>
+<div class="flex overflow-x-auto gap-6 hide-scrollbar pb-8 snap-x">
+<div class="min-w-[160px] snap-center neo-brutal-card p-6 text-center">
+<div class="w-16 h-16 mx-auto mb-4 bg-brand-blue border-2 border-black flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+<span class="material-symbols-outlined text-white text-3xl">description</span>
+</div>
+<h4 class="font-black text-sm uppercase">Custom Pages</h4>
+</div>
+<div class="min-w-[160px] snap-center neo-brutal-card p-6 text-center">
+<div class="w-16 h-16 mx-auto mb-4 bg-brand-red border-2 border-black flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+<span class="material-symbols-outlined text-white text-3xl">chat</span>
+</div>
+<h4 class="font-black text-sm uppercase">WhatsApp</h4>
+</div>
+<div class="min-w-[160px] snap-center neo-brutal-card p-6 text-center">
+<div class="w-16 h-16 mx-auto mb-4 bg-brand-blue border-2 border-black flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+<span class="material-symbols-outlined text-white text-3xl">map</span>
+</div>
+<h4 class="font-black text-sm uppercase">Google Maps</h4>
+</div>
+<div class="min-w-[160px] snap-center neo-brutal-card p-6 text-center">
+<div class="w-16 h-16 mx-auto mb-4 bg-brand-red border-2 border-black flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+<span class="material-symbols-outlined text-white text-3xl">qr_code_2</span>
+</div>
+<h4 class="font-black text-sm uppercase">UPI Payment</h4>
+</div>
+</div>
+</section>
+<!-- Pricing -->
+<section id="pricing" class="py-12 md:py-20 px-4 md:px-6 bg-background grid-bg">
+<div class="text-center mb-12">
+<h2 class="font-headline text-4xl font-black mb-6 uppercase italic">Simple Pricing</h2>
+<p class="font-bold text-sm mb-8 uppercase tracking-widest text-brand-red">No Hidden Traps. Just Pure Growth.</p>
+</div>
+<div class="grid grid-cols-1 gap-12 max-w-lg mx-auto">
+<div class="neo-brutal-card p-5 md:p-8 relative bg-white">
+<div class="mb-4">
+<h3 class="text-2xl font-black uppercase italic leading-tight">Basic Plan</h3>
+<p class="text-[10px] font-bold text-brand-blue mt-1 uppercase">Smart start for small business websites</p>
+</div>
+<div class="mb-6">
+<div class="text-5xl font-black text-brand-red italic">₹3333</div>
+<div class="text-xs font-black uppercase bg-black text-white inline-block px-2 py-1 mt-2">Annual Renewal ₹1399</div>
+</div>
+<ul class="space-y-3 mb-8">
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-blue text-lg">check_circle</span> 1 Free Domain Name</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-blue text-lg">check_circle</span> 10 Page Dynamic Website</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-blue text-lg">check_circle</span> Business Email ID (Webmail)</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-blue text-lg">check_circle</span> Images &amp; Videos</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-blue text-lg">check_circle</span> Bandwidth / Space</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-blue text-lg">check_circle</span> 100% Responsive Website</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-blue text-lg">check_circle</span> Live Chat Integration</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-blue text-lg">check_circle</span> AI Chat Bot</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-blue text-lg">check_circle</span> Social Media Integration</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-blue text-lg">check_circle</span> WhatsApp Integration</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-blue text-lg">check_circle</span> 24/7 Support (SLA: 48 Hours)</li>
+</ul>
+<button onclick="choosePlan('Basic Plan - ₹3333')" class="neo-brutal-btn w-full py-4 font-black text-sm uppercase italic">Choose Basic →</button>
+</div>
+<div class="neo-brutal-card p-5 md:p-8 relative bg-white border-4 border-black overflow-hidden">
+<div class="absolute -right-6 top-5 bg-brand-red text-white text-[10px] font-black px-8 py-1 rotate-45 border-2 border-black z-10">POPULAR</div>
+<div class="mb-4">
+<h3 class="text-2xl font-black uppercase italic leading-tight">Classic Plan</h3>
+<p class="text-[10px] font-bold text-brand-blue mt-1 uppercase">Balanced package for growing brands</p>
+</div>
+<div class="mb-6">
+<div class="text-5xl font-black text-brand-blue italic">₹4444</div>
+<div class="text-xs font-black uppercase bg-black text-white inline-block px-2 py-1 mt-2">Annual Renewal ₹1890</div>
+</div>
+<ul class="space-y-3 mb-8">
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-red text-lg">check_circle</span> 1 Free Domain Name</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-red text-lg">check_circle</span> UL (15) Pages Dynamic Website</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-red text-lg">check_circle</span> Business Email ID (Webmail)</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-red text-lg">check_circle</span> Unlimited Images &amp; Videos</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-red text-lg">check_circle</span> Unlimited Bandwidth / Space</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-red text-lg">check_circle</span> 100% Responsive Website</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-red text-lg">check_circle</span> AI Chat Bot</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-red text-lg">check_circle</span> Live Chat Integration</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-red text-lg">check_circle</span> Payment Gateway Integration</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-red text-lg">check_circle</span> Social Media Integration</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-red text-lg">check_circle</span> WhatsApp Integration</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-red text-lg">check_circle</span> 24/7 Support (SLA: 24 Hours)</li>
+</ul>
+<button onclick="choosePlan('Classic Plan - ₹4444')" class="neo-brutal-btn w-full py-4 bg-brand-red text-white font-black text-sm uppercase italic">Choose Classic →</button>
+</div>
+<div class="neo-brutal-card p-5 md:p-8 relative bg-black text-white">
+<div class="mb-4">
+<h3 class="text-2xl font-black uppercase italic leading-tight text-white">Premium Plan</h3>
+<p class="text-[10px] font-bold text-brand-red mt-1 uppercase">Full-featured option for advanced business needs</p>
+</div>
+<div class="mb-6">
+<div class="text-5xl font-black text-neon-green italic">₹6666</div>
+<div class="text-xs font-black uppercase bg-white text-black inline-block px-2 py-1 mt-2">Annual Renewal ₹2090</div>
+</div>
+<ul class="space-y-3 mb-8">
+<li class="flex items-start gap-3 text-xs font-bold leading-tight text-white/90"><span class="material-symbols-outlined text-neon-green text-lg">check_circle</span> 1 Free Domain Name</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight text-white/90"><span class="material-symbols-outlined text-neon-green text-lg">check_circle</span> UL (20) Pages Dynamic Website</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight text-white/90"><span class="material-symbols-outlined text-neon-green text-lg">check_circle</span> Unlimited Email ID (Webmail / Outlook)</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight text-white/90"><span class="material-symbols-outlined text-neon-green text-lg">check_circle</span> Unlimited Images &amp; Videos</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight text-white/90"><span class="material-symbols-outlined text-neon-green text-lg">check_circle</span> Unlimited Bandwidth / Space</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight text-white/90"><span class="material-symbols-outlined text-neon-green text-lg">check_circle</span> 100% Responsive Website</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight text-white/90"><span class="material-symbols-outlined text-neon-green text-lg">check_circle</span> Live Chat Integration</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight text-white/90"><span class="material-symbols-outlined text-neon-green text-lg">check_circle</span> Payment Gateway Integration</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight text-white/90"><span class="material-symbols-outlined text-neon-green text-lg">check_circle</span> Social Media Integration</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight text-white/90"><span class="material-symbols-outlined text-neon-green text-lg">check_circle</span> WhatsApp Integration</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight text-white/90"><span class="material-symbols-outlined text-neon-green text-lg">check_circle</span> cPanel Access</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight text-white/90"><span class="material-symbols-outlined text-neon-green text-lg">check_circle</span> 24/7 Support (SLA: 12 Hours)</li>
+</ul>
+<button onclick="choosePlan('Premium Plan - ₹6666')" class="w-full py-4 bg-neon-green text-black border-2 border-white font-black text-sm uppercase italic shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">Choose Premium →</button>
+</div>
+</div>
+<div class="hidden">
+<!-- Tier 1 — Starter -->
+<div class="neo-brutal-card p-8 relative bg-white">
+<div class="mb-4">
+<h3 class="text-2xl font-black uppercase italic leading-tight">Tier 1 — <br/>Starter Website</h3>
+<p class="text-[10px] font-bold text-brand-blue mt-1 uppercase">Ideal for Salons, Shops, Cafes, Plumbers</p>
+</div>
+<div class="mb-6">
+<div class="text-5xl font-black text-brand-red italic">₹3,333</div>
+<div class="text-xs font-black uppercase bg-black text-white inline-block px-2 py-1 mt-2">+ ₹599/mo Maintenance</div>
+</div>
+<ul class="space-y-3 mb-8">
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-blue text-lg">check_circle</span> 5-page responsive website</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-blue text-lg">check_circle</span> Mobile-first design</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-blue text-lg">check_circle</span> WhatsApp, Contact Form &amp; Maps</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-blue text-lg">check_circle</span> Basic SEO &amp; Fast hosting</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-blue text-lg">check_circle</span> 1 Month Free Support</li>
+</ul>
+<button class="neo-brutal-btn w-full py-4 font-black text-sm uppercase italic">Choose Starter</button>
+</div>
+<!-- Tier 2 — Growth (Popular) -->
+<div class="neo-brutal-card p-5 md:p-8 relative bg-white border-4 border-black overflow-hidden">
+<div class="absolute -right-6 top-5 bg-brand-red text-white text-[10px] font-black px-8 py-1 rotate-45 border-2 border-black z-10">POPULAR</div>
+<div class="mb-4">
+<h3 class="text-2xl font-black uppercase italic leading-tight">Tier 2 — <br/>Growth Package</h3>
+<p class="text-[10px] font-bold text-brand-blue mt-1 uppercase">Ideal for Clinics, Gyms, Restaurants</p>
+</div>
+<div class="mb-6">
+<div class="text-5xl font-black text-brand-blue italic">₹7,999</div>
+<div class="text-xs font-black uppercase bg-black text-white inline-block px-2 py-1 mt-2">+ ₹899/mo Maintenance</div>
+</div>
+<ul class="space-y-3 mb-8">
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-red text-lg">stars</span> <strong>Everything in Starter +</strong></li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-red text-lg">check_circle</span> 8–10 Pages + Blog Section</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-red text-lg">check_circle</span> Gallery &amp; Appointment Form</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-red text-lg">check_circle</span> Google Business &amp; Enhanced SEO</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight"><span class="material-symbols-outlined text-brand-red text-lg">check_circle</span> Performance Optimization</li>
+</ul>
+<button class="neo-brutal-btn w-full py-4 bg-brand-red text-white font-black text-sm uppercase italic">Choose Growth</button>
+</div>
+<!-- Tier 3 — AI Powered -->
+<div class="neo-brutal-card p-5 md:p-8 relative bg-black text-white">
+<div class="mb-4">
+<h3 class="text-2xl font-black uppercase italic leading-tight text-white">Tier 3 — <br/>AI Smart Site</h3>
+<p class="text-[10px] font-bold text-brand-red mt-1 uppercase">Ideal for Premium Businesses</p>
+</div>
+<div class="mb-6">
+<div class="text-5xl font-black text-neon-green italic">₹13,999</div>
+<div class="text-xs font-black uppercase bg-white text-black inline-block px-2 py-1 mt-2">+ ₹1,500/mo Maintenance</div>
+</div>
+<ul class="space-y-3 mb-8">
+<li class="flex items-start gap-3 text-xs font-bold leading-tight text-white/90"><span class="material-symbols-outlined text-neon-green text-lg">bolt</span> <strong>Everything in Growth +</strong></li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight text-white/90"><span class="material-symbols-outlined text-neon-green text-lg">check_circle</span> AI FAQ &amp; Lead Qualify Bots</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight text-white/90"><span class="material-symbols-outlined text-neon-green text-lg">check_circle</span> Auto Customer Support Bot</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight text-white/90"><span class="material-symbols-outlined text-neon-green text-lg">check_circle</span> CRM / WhatsApp Automation</li>
+<li class="flex items-start gap-3 text-xs font-bold leading-tight text-white/90"><span class="material-symbols-outlined text-neon-green text-lg">check_circle</span> Priority Support &amp; Training</li>
+</ul>
+<button class="w-full py-4 bg-neon-green text-black border-2 border-white font-black text-sm uppercase italic shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">Get AI Power</button>
+</div>
+</div>
+</div>
+<!-- Add-On Pricing -->
+<div class="mt-20 max-w-lg mx-auto">
+<div class="neo-brutal-card bg-white p-5 md:p-8">
+<h3 class="font-headline text-2xl font-black mb-6 uppercase italic underline decoration-brand-blue decoration-4">Budget-Friendly Add-Ons</h3>
+<div class="space-y-4">
+<div class="flex justify-between items-center border-b-2 border-black/10 pb-2">
+<span class="font-bold text-sm uppercase italic">Extra Page</span>
+<span class="font-black text-brand-red">₹200–500</span>
+</div>
+<div class="flex justify-between items-center border-b-2 border-black/10 pb-2">
+<span class="font-bold text-sm uppercase italic">E-Commerce Integration</span>
+<span class="font-black text-brand-red">₹1,500</span>
+</div>
+<div class="flex justify-between items-center border-b-2 border-black/10 pb-2">
+<span class="font-bold text-sm uppercase italic">Custom Dashboard</span>
+<span class="font-black text-brand-red">₹1,300</span>
+</div>
+<div class="flex justify-between items-center border-b-2 border-black/10 pb-2">
+<span class="font-bold text-sm uppercase italic">SEO Monthly Retainer</span>
+<span class="font-black text-brand-red">₹2,999+/mo</span>
+</div>
+<div class="flex justify-between items-center border-b-2 border-black/10 pb-2">
+<span class="font-bold text-sm uppercase italic">WhatsApp Automation</span>
+<span class="font-black text-brand-red">₹400</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-bold text-sm uppercase italic">Advanced AI Bot</span>
+<span class="font-black text-brand-red">₹799</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Timeline -->
+<section id="timeline" class="py-12 md:py-20 px-4 md:px-6 bg-white border-t-4 border-black">
+<h2 class="font-headline text-3xl font-black mb-12 text-center uppercase italic">Launch in 4 Steps</h2>
+<div class="space-y-12 relative max-w-sm mx-auto">
+<div class="absolute left-6 top-4 bottom-4 w-1 bg-black"></div>
+<div class="relative pl-16">
+<div class="absolute left-0 top-0 w-12 h-12 border-4 border-black bg-brand-red flex items-center justify-center text-white font-black text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">1</div>
+<h4 class="font-black text-xl uppercase mb-1 italic">Tell Us Business</h4>
+<p class="text-sm font-bold text-on-surface-variant">Quick 10-minute call to share your vision.</p>
+</div>
+<div class="relative pl-16">
+<div class="absolute left-0 top-0 w-12 h-12 border-4 border-black bg-white flex items-center justify-center text-black font-black text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">2</div>
+<h4 class="font-black text-xl uppercase mb-1 italic">Build in 48h</h4>
+<p class="text-sm font-bold text-on-surface-variant">Experts code while you handle sales.</p>
+</div>
+<div class="relative pl-16">
+<div class="absolute left-0 top-0 w-12 h-12 border-4 border-black bg-brand-blue flex items-center justify-center text-white font-black text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">3</div>
+<h4 class="font-black text-xl uppercase mb-1 italic">Live Preview</h4>
+<p class="text-sm font-bold text-on-surface-variant">Check your site on a private link.</p>
+</div>
+<div class="relative pl-16">
+<div class="absolute left-0 top-0 w-12 h-12 border-4 border-black bg-black flex items-center justify-center text-white font-black text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">4</div>
+<h4 class="font-black text-xl uppercase mb-1 italic">Launch!</h4>
+<p class="text-sm font-bold text-on-surface-variant">Domain live. Google starts indexing.</p>
+</div>
+</div>
+</section>
+<!-- Portfolio -->
+<section id="work" class="py-10 md:py-12 px-4 md:px-6 bg-background grid-bg">
+<h2 class="font-headline text-4xl font-black mb-8 uppercase italic underline decoration-brand-red decoration-8">Recent Crafts</h2>
+<div class="grid grid-cols-2 gap-3 md:gap-4 max-w-lg mx-auto">
+<div class="neo-brutal-card overflow-hidden group">
+<div class="aspect-[4/3] relative">
+<img class="w-full h-full object-cover" data-alt="High-end fine dining restaurant website" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBoKJwXMsON6i3liKC7mwlsMzDaPU4L0GV-mqFc4eNFYYFdkJcsvoe2npiJbjDRPR_RFvj0azKNRmRglFdw4LYWvxwYoyIJvad4IGD2yeShpEu4obQZRdb1p1aAZA9mWmFL7udDzy_QC7_8Uf_I22c3HiMqmKQBnYGG8q_yW8ll_SW9FtJZf0VRBHfPmKmBV36r7j2Zl8V7MG4EFZjOh9z84m8et3mDBjV4EzPAJ7KaPaqmUyKpYhlBbX6DYI9Q_4QCMuGeflvUHn9"/>
+</div>
+<div class="p-3 bg-white border-t-4 border-black">
+<p class="text-[9px] text-brand-red font-black uppercase tracking-widest mb-0.5">Hospitality</p>
+<h4 class="text-sm font-black uppercase italic">Delhi Curry House</h4>
+</div>
+</div>
+<div class="neo-brutal-card overflow-hidden group">
+<div class="aspect-[4/3] relative">
+<img class="w-full h-full object-cover" data-alt="Medical clinic landing page" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtklRq5Q9wjz817YBUsj9nkueMjeXfepxKTLbzytnnM6Bouv6zW9NggDoPEsxuTZilTWKxCdGBRyAgKeRs6CNG7TVCnaCx-IG0BbwoM4V0_JXZDuFvEVDh1EInXiHUk-12ExY5kwaPKI0Sqx_Tyld55DpvlytSo13C7leHwjotJ1iNclYFyE86CFOvA47Js5pPHIicQgYjI66TlJ8IfaLnbZzUsBPVf_7SU3kbVjkRgGrdhr9hcaOhDeOLCCflw72ncCKppJ_XmlmU"/>
+</div>
+<div class="p-3 bg-white border-t-4 border-black">
+<p class="text-[9px] text-brand-blue font-black uppercase tracking-widest mb-0.5">Medical</p>
+<h4 class="text-sm font-black uppercase italic">LifeCare Clinic</h4>
+</div>
+</div>
+<a href="https://perfumemeauj.netlify.app/" target="_blank" class="col-span-2 neo-brutal-card overflow-hidden group block">
+<div class="aspect-[16/7] relative">
+<img class="w-full h-full object-cover object-top" src="verve_perfume.png" alt="Verve Perfume luxury website"/>
+</div>
+<div class="p-3 bg-white border-t-4 border-black flex justify-between items-center">
+<div>
+<p class="text-[9px] text-brand-red font-black uppercase tracking-widest mb-0.5">Luxury / E-Commerce</p>
+<h4 class="text-sm font-black uppercase italic">Verve Perfume</h4>
+</div>
+<span class="text-[9px] font-black uppercase italic text-brand-blue">View Live →</span>
+</div>
+</a>
+</div>
+</section>
+<!-- Final CTA with Form -->
+<section id="contact" class="py-12 md:py-20 px-4 md:px-6 bg-brand-red relative">
+<div class="absolute inset-0 diagonal-stripe opacity-10"></div>
+<div class="neo-brutal-card p-5 md:p-8 bg-white text-center relative max-w-md mx-auto">
+<h2 class="font-headline text-3xl font-black mb-4 uppercase italic">Ready to go online?</h2>
+<p class="text-on-surface-variant font-bold mb-8 text-sm">Fill the form, we'll call you in 30 mins.</p>
+<form id="contact-form" class="space-y-6" onsubmit="submitForm(event)">
+<input type="hidden" id="form-plan" value="Not specified"/>
+<div class="relative">
+<input id="form-name" class="w-full border-4 border-black p-4 font-black placeholder:text-black/40 outline-none focus:translate-x-1 focus:translate-y-1 focus:shadow-none transition-all" placeholder="YOUR NAME" type="text" required/>
+</div>
+<div class="relative">
+<input id="form-phone" class="w-full border-4 border-black p-4 font-black placeholder:text-black/40 outline-none focus:translate-x-1 focus:translate-y-1 focus:shadow-none transition-all" placeholder="PHONE NUMBER (10 digits)" type="tel" required/>
+</div>
+<div id="form-plan-badge" class="hidden bg-brand-blue text-white text-xs font-black px-3 py-2 border-2 border-black text-left">
+  SELECTED: <span id="plan-badge-text"></span> &nbsp;<button type="button" onclick="clearPlan()" class="underline">✕ clear</button>
+</div>
+<div id="form-error" class="hidden bg-red-100 border-2 border-red-500 text-red-700 text-xs font-black px-3 py-2 text-left"></div>
+<button id="submit-btn" class="neo-brutal-btn w-full font-headline font-black py-5 text-xl uppercase italic mt-4" type="submit">
+                SEND REQUEST →
+            </button>
+</form>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-black text-white pt-12 pb-8 px-6">
+<div class="max-w-7xl mx-auto flex flex-col items-center gap-8 text-center">
+<div class="flex items-center">
+<img alt="Rocketloom logo" class="w-[130px] md:w-[180px] h-auto object-contain" src="logo.svg"/>
+</div>
+<div class="flex flex-wrap justify-center gap-6 text-sm font-black uppercase italic">
+<a class="hover:text-brand-red transition-colors" href="#">Services</a>
+<a class="hover:text-brand-red transition-colors" href="#">Pricing</a>
+<a class="hover:text-brand-red transition-colors" href="#">Our Work</a>
+<a class="hover:text-brand-red transition-colors" href="#">Contact</a>
+</div>
+<!-- Social Icons -->
+<div class="flex gap-6 mt-2">
+<a class="w-12 h-12 border-4 border-neon-pink flex items-center justify-center bg-black text-neon-pink shadow-[4px_4px_0px_0px_#FF00FF] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all" href="https://www.instagram.com/rocketloom?igsh=MXRqanFpazAwN3V0Zg==" target="_blank">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path>
+</svg>
+</a>
+<a class="w-12 h-12 border-4 border-neon-green flex items-center justify-center bg-black text-neon-green shadow-[4px_4px_0px_0px_#39FF14] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all" href="https://wa.me/919911134078" target="_blank">
+<svg class="w-7 h-7" fill="currentColor" viewbox="0 0 24 24">
+<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path>
+</svg>
+</a>
+</div>
+<div class="scissored-divider w-full opacity-30 invert mt-4">
+<span class="material-symbols-outlined scissor-icon bg-black text-white">content_cut</span>
+</div>
+<p class="text-[10px] font-black tracking-widest uppercase opacity-60">
+            © 2024 ROCKETLOOM. BUILT BOLD FOR DELHI.
+        </p>
+</div>
+</footer>
+<!-- ── AI Chatbot Widget ── -->
+<style>
+  #chat-panel { transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease; }
+  #chat-panel.hidden-panel { transform: translateY(30px) scale(0.95); opacity: 0; pointer-events: none; }
+  .msg-bot { background:#fff; border:2.5px solid #000; box-shadow:3px 3px 0 #000; border-radius:0 12px 12px 12px; }
+  .msg-user { background:#4D61FF; color:#fff; border:2.5px solid #000; box-shadow:3px 3px 0 #000; border-radius:12px 0 12px 12px; }
+  .typing-dot { width:7px;height:7px;border-radius:50%;background:#000;display:inline-block;animation:tdot 1.2s infinite; }
+  .typing-dot:nth-child(2){animation-delay:.2s} .typing-dot:nth-child(3){animation-delay:.4s}
+  @keyframes tdot{0%,80%,100%{transform:scale(0.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+  #chat-messages::-webkit-scrollbar{width:4px} #chat-messages::-webkit-scrollbar-thumb{background:#000}
+  .quick-btn { border:2px solid #000; font-size:11px; font-weight:900; padding:4px 10px; cursor:pointer; transition:all .1s; text-transform:uppercase; background:#f5f5f5; }
+  .quick-btn:hover { background:#4D61FF; color:#fff; transform:translate(-1px,-1px); box-shadow:2px 2px 0 #000; }
+</style>
+
+<!-- Chat Panel -->
+<div id="chat-panel" class="hidden-panel fixed bottom-28 right-6 z-[60] w-[340px] flex flex-col" style="height:500px;">
+  <div class="border-4 border-black bg-white flex flex-col h-full shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+    <!-- Header -->
+    <div class="bg-black text-white px-4 py-3 flex items-center justify-between flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-brand-red border-2 border-white flex items-center justify-center text-lg font-black">🚀</div>
+        <div>
+          <div class="font-black text-sm uppercase">Rocket AI</div>
+          <div class="text-[10px] text-neon-green font-bold flex items-center gap-1"><span class="w-1.5 h-1.5 bg-neon-green rounded-full inline-block animate-pulse"></span>Online</div>
+        </div>
+      </div>
+      <button onclick="closeChat()" class="text-white/60 hover:text-white font-black text-lg leading-none">✕</button>
+    </div>
+    <!-- Messages -->
+    <div id="chat-messages" class="flex-1 overflow-y-auto p-3 space-y-3 bg-gray-50"></div>
+    <!-- Quick replies -->
+    <div id="quick-replies" class="px-3 pb-2 flex flex-wrap gap-1.5 flex-shrink-0"></div>
+    <!-- Input -->
+    <div class="border-t-4 border-black flex flex-shrink-0">
+      <input id="chat-input" type="text" placeholder="Type your message..."
+        class="flex-1 px-3 py-3 font-bold text-sm outline-none bg-white"
+        onkeydown="if(event.key==='Enter')sendMsg()"/>
+      <button onclick="sendMsg()" id="chat-send-btn"
+        class="bg-brand-blue text-white px-4 font-black text-sm border-l-4 border-black hover:bg-blue-600 transition-colors">
+        ➤
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Floating Buttons -->
+<div class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+  <!-- AI Chat toggle -->
+  <button id="chat-toggle-btn" onclick="toggleChat()"
+    class="w-14 h-14 bg-brand-red border-4 border-black flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all relative">
+    <span id="chat-icon-open" class="text-2xl">🤖</span>
+    <span id="chat-icon-close" class="text-xl text-white font-black hidden">✕</span>
+    <span id="chat-notif" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-neon-green border-2 border-black rounded-full text-[9px] font-black flex items-center justify-center text-black">1</span>
+  </button>
+  <!-- WhatsApp -->
+  <a class="w-14 h-14 bg-neon-green border-4 border-black flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all" href="https://wa.me/919911134078" target="_blank">
+    <svg class="w-8 h-8 text-black" fill="currentColor" viewbox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path></svg>
+  </a>
+</div>
+<!-- Toast -->
+<div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-[999] hidden">
+  <div id="toast-inner" class="border-4 border-black px-6 py-4 font-black text-sm uppercase shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex items-center gap-3 min-w-[260px]">
+    <span id="toast-icon" class="text-xl"></span>
+    <span id="toast-msg"></span>
+  </div>
+</div>
+
+<script>
+// ── Model ─────────────────────────────────────────────────
+document.getElementById('laptop-viewer').src = window.LAPTOP_DATA;
+
+// ── Paper plane — remove from DOM after animation ─────────
+const plane = document.getElementById('plane-anim');
+plane.addEventListener('animationend', () => plane.remove());
+
+// ── Chatbot ───────────────────────────────────────────────
+let chatHistory = [];
+let chatOpened  = false;
+let isBotTyping = false;
+
+function toggleChat() {
+  chatOpened ? closeChat() : openChat();
+}
+function openChat() {
+  chatOpened = true;
+  const panel = document.getElementById('chat-panel');
+  panel.classList.remove('hidden-panel');
+  document.getElementById('chat-icon-open').classList.add('hidden');
+  document.getElementById('chat-icon-close').classList.remove('hidden');
+  document.getElementById('chat-notif').classList.add('hidden');
+  if (chatHistory.length === 0) sendBotGreeting();
+  setTimeout(() => document.getElementById('chat-input').focus(), 300);
+}
+function closeChat() {
+  chatOpened = false;
+  document.getElementById('chat-panel').classList.add('hidden-panel');
+  document.getElementById('chat-icon-open').classList.remove('hidden');
+  document.getElementById('chat-icon-close').classList.add('hidden');
+}
+
+function appendMsg(role, text) {
+  const box = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
+  const bubble = document.createElement('div');
+  bubble.className = `${role === 'user' ? 'msg-user' : 'msg-bot'} px-3 py-2 text-sm font-bold max-w-[82%] leading-snug`;
+  bubble.innerHTML = text.replace(/\n/g, '<br>');
+  div.appendChild(bubble);
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+  return bubble;
+}
+
+function showTyping() {
+  const box = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.id = 'typing-indicator';
+  div.className = 'flex justify-start';
+  div.innerHTML = `<div class="msg-bot px-3 py-2">
+    <span class="typing-dot"></span>
+    <span class="typing-dot"></span>
+    <span class="typing-dot"></span>
+  </div>`;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+function hideTyping() {
+  document.getElementById('typing-indicator')?.remove();
+}
+
+function setQuickReplies(options) {
+  const qr = document.getElementById('quick-replies');
+  qr.innerHTML = '';
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'quick-btn';
+    btn.textContent = opt;
+    btn.onclick = () => { qr.innerHTML = ''; sendMsg(opt); };
+    qr.appendChild(btn);
+  });
+}
+
+function getQuickReplies(botText) {
+  const t = botText.toLowerCase();
+  if (t.includes('type of business') || t.includes('business do you')) return ['Salon/Shop','Restaurant','Clinic','E-Commerce','Portfolio','Other'];
+  if (t.includes('plan') && (t.includes('basic') || t.includes('classic') || t.includes('premium'))) return ['Basic ₹3,333','Classic ₹4,444','Premium ₹6,666','Tell me more'];
+  if (t.includes('feature') || t.includes('page') || t.includes('need')) return ['WhatsApp + Maps','Online Booking','Payment Gateway','Product Catalog','All of the above'];
+  if (t.includes('callback') || t.includes('call you') || t.includes('30 min')) return ['Sounds great!','I have more questions'];
+  return [];
+}
+
+async function sendBotGreeting() {
+  showTyping();
+  await new Promise(r => setTimeout(r, 800));
+  hideTyping();
+  const greeting = "Hey there! 👋 I'm Rocket, your AI assistant from Rocketloom!\n\nWhat type of business do you have? I'll help you find the perfect website plan! 🚀";
+  appendMsg('assistant', greeting);
+  chatHistory.push({ role: 'assistant', content: greeting });
+  setQuickReplies(['Salon/Shop', 'Restaurant', 'Clinic', 'E-Commerce', 'Portfolio', 'Other']);
+}
+
+async function sendMsg(text) {
+  if (isBotTyping) return;
+  const input = document.getElementById('chat-input');
+  const msg   = (text || input.value).trim();
+  if (!msg) return;
+  input.value = '';
+  document.getElementById('quick-replies').innerHTML = '';
+
+  appendMsg('user', msg);
+  chatHistory.push({ role: 'user', content: msg });
+
+  isBotTyping = true;
+  document.getElementById('chat-send-btn').disabled = true;
+  showTyping();
+
+  try {
+    const res  = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: chatHistory })
+    });
+    const data = await res.json();
+    hideTyping();
+
+    if (data.error) {
+      appendMsg('assistant', '⚠️ ' + data.error);
+    } else {
+      appendMsg('assistant', data.content);
+      chatHistory.push({ role: 'assistant', content: data.content });
+      setQuickReplies(getQuickReplies(data.content));
+
+      if (data.leadSaved) {
+        setTimeout(() => {
+          appendMsg('assistant', '✅ Got it! Your details are saved. Our team will call you within 30 minutes. You can also reach us directly on WhatsApp! 💬');
+        }, 600);
+      }
+    }
+  } catch {
+    hideTyping();
+    appendMsg('assistant', '⚠️ Could not reach AI. Please refresh or contact us on WhatsApp.');
+  }
+
+  isBotTyping = false;
+  document.getElementById('chat-send-btn').disabled = false;
+  document.getElementById('chat-input').focus();
+}
+
+// ── Button pop animation ───────────────────────────────────
+document.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        btn.classList.remove('btn-clicked');
+        void btn.offsetWidth;
+        btn.classList.add('btn-clicked');
+        btn.addEventListener('animationend', () => btn.classList.remove('btn-clicked'), { once: true });
+    });
+});
+
+// ── Mobile menu ───────────────────────────────────────────
+let mobileMenuOpen = false;
+function toggleMobileMenu() {
+    mobileMenuOpen = !mobileMenuOpen;
+    const menu = document.getElementById('mobile-menu');
+    const h1 = document.getElementById('hb1');
+    const h2 = document.getElementById('hb2');
+    const h3 = document.getElementById('hb3');
+    if (mobileMenuOpen) {
+        menu.classList.remove('hidden');
+        h1.style.transform = 'translateY(5.5px) rotate(45deg)';
+        h2.style.opacity   = '0';
+        h3.style.transform = 'translateY(-5.5px) rotate(-45deg)';
+    } else {
+        menu.classList.add('hidden');
+        h1.style.transform = h2.style.transform = h3.style.transform = '';
+        h2.style.opacity = '1';
+    }
+}
+function closeMobileMenu() {
+    mobileMenuOpen = false;
+    document.getElementById('mobile-menu').classList.add('hidden');
+    const h1 = document.getElementById('hb1');
+    const h2 = document.getElementById('hb2');
+    const h3 = document.getElementById('hb3');
+    h1.style.transform = h2.style.transform = h3.style.transform = '';
+    h2.style.opacity = '1';
+}
+
+// ── Smooth scroll ──────────────────────────────────────────
+function scrollTo(id) {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+}
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+        const id = a.getAttribute('href').slice(1);
+        const el = document.getElementById(id);
+        if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth' }); }
+    });
+});
+
+// ── Toast ──────────────────────────────────────────────────
+function showToast(msg, type = 'success') {
+    const toast = document.getElementById('toast');
+    const inner = document.getElementById('toast-inner');
+    document.getElementById('toast-msg').textContent = msg;
+    document.getElementById('toast-icon').textContent = type === 'success' ? '✅' : '❌';
+    inner.className = `border-4 border-black px-6 py-4 font-black text-sm uppercase shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex items-center gap-3 min-w-[260px] ${type === 'success' ? 'bg-neon-green text-black' : 'bg-white text-red-600'}`;
+    toast.classList.remove('hidden');
+    setTimeout(() => toast.classList.add('hidden'), 4000);
+}
+
+// ── Plan selection ─────────────────────────────────────────
+function choosePlan(plan) {
+    document.getElementById('form-plan').value = plan;
+    document.getElementById('plan-badge-text').textContent = plan;
+    document.getElementById('form-plan-badge').classList.remove('hidden');
+    scrollTo('contact');
+}
+function clearPlan() {
+    document.getElementById('form-plan').value = 'Not specified';
+    document.getElementById('form-plan-badge').classList.add('hidden');
+}
+
+// ── Contact form submit ────────────────────────────────────
+async function submitForm(e) {
+    e.preventDefault();
+    const btn  = document.getElementById('submit-btn');
+    const errEl = document.getElementById('form-error');
+    const name  = document.getElementById('form-name').value.trim();
+    const phone = document.getElementById('form-phone').value.trim();
+    const plan  = document.getElementById('form-plan').value;
+
+    errEl.classList.add('hidden');
+    btn.disabled = true;
+    btn.textContent = 'SENDING...';
+
+    try {
+        const res  = await fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, phone, plan })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            showToast("Request sent! We'll call you in 30 mins.");
+            document.getElementById('contact-form').reset();
+            clearPlan();
+            // Open WhatsApp in new tab
+            if (data.whatsappUrl) window.open(data.whatsappUrl, '_blank');
+        } else {
+            errEl.textContent = data.error || 'Something went wrong.';
+            errEl.classList.remove('hidden');
+            showToast(data.error || 'Something went wrong.', 'error');
+        }
+    } catch {
+        errEl.textContent = 'Cannot reach server. Make sure server.js is running.';
+        errEl.classList.remove('hidden');
+        showToast('Server not reachable.', 'error');
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'SEND REQUEST →';
+}
+</script>
+</body></html>

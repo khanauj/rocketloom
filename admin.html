@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rocketloom — Admin</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Courier New', monospace; }
+  .neo { border: 3px solid black; box-shadow: 4px 4px 0 black; }
+  tr:hover td { background: #f0f0ff; }
+</style>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+
+<!-- Login -->
+<div id="login-screen" class="flex items-center justify-center min-h-screen">
+  <div class="neo bg-white p-8 w-full max-w-sm">
+    <h1 class="text-2xl font-black uppercase italic mb-6">🚀 Rocketloom Admin</h1>
+    <input id="pass-input" type="password" placeholder="Password"
+      class="w-full border-2 border-black p-3 font-bold mb-4 outline-none"
+      onkeydown="if(event.key==='Enter')login()"/>
+    <button onclick="login()"
+      class="w-full bg-black text-white py-3 font-black uppercase hover:bg-gray-800 transition-colors">
+      LOGIN →
+    </button>
+    <p id="login-err" class="text-red-600 font-bold text-sm mt-3 hidden">Wrong password.</p>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard" class="hidden max-w-6xl mx-auto">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-black uppercase italic">🚀 Rocketloom Leads</h1>
+    <button onclick="logout()" class="neo px-4 py-2 font-black text-sm uppercase bg-white hover:bg-red-50">Logout</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-3 gap-4 mb-8" id="stats-row">
+    <div class="neo bg-white p-6">
+      <div class="text-4xl font-black text-blue-600" id="stat-total">—</div>
+      <div class="text-xs font-black uppercase mt-1">Total Leads</div>
+    </div>
+    <div class="neo bg-white p-6">
+      <div class="text-4xl font-black text-green-600" id="stat-today">—</div>
+      <div class="text-xs font-black uppercase mt-1">Today</div>
+    </div>
+    <div class="neo bg-white p-6">
+      <div class="text-sm font-black" id="stat-plans">—</div>
+      <div class="text-xs font-black uppercase mt-1">By Plan</div>
+    </div>
+  </div>
+
+  <!-- Search + Refresh -->
+  <div class="flex gap-3 mb-4">
+    <input id="search" type="text" placeholder="Search name or phone..."
+      class="flex-1 border-2 border-black p-3 font-bold outline-none"
+      oninput="renderTable()"/>
+    <button onclick="loadData()"
+      class="neo px-5 py-2 font-black text-sm uppercase bg-white hover:bg-blue-50">↻ Refresh</button>
+    <button onclick="exportCSV()"
+      class="neo px-5 py-2 font-black text-sm uppercase bg-black text-white hover:bg-gray-800">↓ CSV</button>
+  </div>
+
+  <!-- Table -->
+  <div class="neo bg-white overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b-2 border-black bg-black text-white">
+          <th class="p-3 text-left font-black uppercase text-xs">ID</th>
+          <th class="p-3 text-left font-black uppercase text-xs">Name</th>
+          <th class="p-3 text-left font-black uppercase text-xs">Phone</th>
+          <th class="p-3 text-left font-black uppercase text-xs">Plan</th>
+          <th class="p-3 text-left font-black uppercase text-xs">Source</th>
+          <th class="p-3 text-left font-black uppercase text-xs">Date</th>
+          <th class="p-3 text-left font-black uppercase text-xs">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="leads-body">
+        <tr><td colspan="7" class="p-6 text-center font-bold text-gray-400">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="text-xs font-bold text-gray-500 mt-2" id="lead-count"></p>
+</div>
+
+<script>
+let password = '';
+let allLeads = [];
+
+function login() {
+  password = document.getElementById('pass-input').value;
+  loadData();
+}
+function logout() {
+  password = '';
+  document.getElementById('dashboard').classList.add('hidden');
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('pass-input').value = '';
+}
+
+async function loadData() {
+  const [leadsRes, statsRes] = await Promise.all([
+    fetch(`/api/leads?pass=${password}`),
+    fetch(`/api/stats?pass=${password}`)
+  ]);
+  if (leadsRes.status === 401) {
+    document.getElementById('login-err').classList.remove('hidden');
+    return;
+  }
+  document.getElementById('login-err').classList.add('hidden');
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('dashboard').classList.remove('hidden');
+
+  allLeads = await leadsRes.json();
+  const stats = await statsRes.json();
+
+  document.getElementById('stat-total').textContent = stats.total;
+  document.getElementById('stat-today').textContent = stats.today;
+  document.getElementById('stat-plans').innerHTML = stats.byPlan
+    .map(p => `<span class="block">${p.plan}: <b>${p.c}</b></span>`).join('');
+
+  renderTable();
+}
+
+function renderTable() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const filtered = allLeads.filter(l =>
+    l.name.toLowerCase().includes(q) || l.phone.includes(q)
+  );
+  document.getElementById('lead-count').textContent = `Showing ${filtered.length} of ${allLeads.length} leads`;
+
+  const tbody = document.getElementById('leads-body');
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="7" class="p-6 text-center font-bold text-gray-400">No leads found.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filtered.map(l => `
+    <tr class="border-b border-gray-100">
+      <td class="p-3 font-black text-gray-400">#${l.id}</td>
+      <td class="p-3 font-bold">${l.name}</td>
+      <td class="p-3">
+        <a href="https://wa.me/91${l.phone}?text=Hi+${encodeURIComponent(l.name)}!+This+is+Rocketloom."
+           target="_blank" class="text-green-600 font-black hover:underline">${l.phone} 💬</a>
+      </td>
+      <td class="p-3"><span class="bg-blue-100 text-blue-800 px-2 py-0.5 text-xs font-black">${l.plan}</span></td>
+      <td class="p-3 text-xs text-gray-500 font-bold">${l.source}</td>
+      <td class="p-3 text-xs text-gray-500 font-bold">${l.created_at}</td>
+      <td class="p-3">
+        <button onclick="deleteLead(${l.id})"
+          class="text-red-500 hover:text-red-700 font-black text-xs border border-red-300 px-2 py-1 hover:bg-red-50">✕ Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function deleteLead(id) {
+  if (!confirm('Delete this lead?')) return;
+  await fetch(`/api/leads/${id}?pass=${password}`, { method: 'DELETE' });
+  allLeads = allLeads.filter(l => l.id !== id);
+  renderTable();
+}
+
+function exportCSV() {
+  const headers = ['ID','Name','Phone','Plan','Source','Date'];
+  const rows = allLeads.map(l => [l.id, l.name, l.phone, l.plan, l.source, l.created_at]);
+  const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `rocketloom-leads-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+</script>
+</body>
+</html>

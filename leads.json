@@ -1,0 +1,32 @@
+{
+  "leads": [
+    {
+      "id": 3,
+      "name": "Suhaib",
+      "phone": "8287609176",
+      "plan": "Basic",
+      "message": "",
+      "source": "chatbot",
+      "created_at": "20/4/2026, 1:27:00 am"
+    },
+    {
+      "id": 2,
+      "name": "auj",
+      "phone": "9625044732",
+      "plan": "Classic Plan - ₹4444",
+      "message": "",
+      "source": "contact_form",
+      "created_at": "20/4/2026, 12:59:06 am"
+    },
+    {
+      "id": 1,
+      "name": "Test User",
+      "phone": "9876543210",
+      "plan": "Basic Plan - ?3333",
+      "message": "",
+      "source": "contact_form",
+      "created_at": "20/4/2026, 12:55:12 am"
+    }
+  ],
+  "nextId": 4
+}

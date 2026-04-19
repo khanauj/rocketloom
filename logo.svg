@@ -1,0 +1,12 @@
+<svg width="240" height="80" viewBox="0 0 240 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Rounded Square Background -->
+  <rect width="80" height="80" rx="12" fill="#E11D21"/>
+  
+  <!-- Paper Plane / Triangle Shape -->
+  <path d="M20 55L70 25L55 60L20 55Z" fill="white"/>
+  <path d="M55 60L70 25L62 48L55 60Z" fill="#B91C1C"/>
+
+  <!-- Text: ROCKET LOOM -->
+  <text x="95" y="38" fill="#E11D21" style="font-family: 'Inter', 'Space Grotesk', sans-serif; font-weight: 800; font-size: 32px; letter-spacing: -0.02em;">ROCKET</text>
+  <text x="95" y="68" fill="#E11D21" style="font-family: 'Inter', 'Space Grotesk', sans-serif; font-weight: 800; font-size: 32px; letter-spacing: -0.02em;">LOOM</text>
+</svg>

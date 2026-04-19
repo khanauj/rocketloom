@@ -1,0 +1,4 @@
+node_modules/
+.gemini/
+*.txt
+laptop_b64.txt
