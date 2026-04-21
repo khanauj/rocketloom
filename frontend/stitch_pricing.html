@@ -231,9 +231,9 @@
         </div></h1>
 <div class="bg-white border-4 border-black p-6 mb-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
 <p class="text-xl text-black font-bold leading-tight">
-                Premium 5-page site + hosting for just <br/>
-<span class="text-brand-blue font-black text-3xl">₹3,333 one-time</span> <br/>
-<span class="text-sm">+ ₹599/mo maintenance</span>
+                Professional website + hosting starting at <br/>
+<span class="text-brand-blue font-black text-3xl">₹4,990 one-time</span> <br/>
+<span class="text-sm">Delivery in 48 Hours</span>
 </p>
 </div>
 <div class="flex flex-col gap-4 mb-12">
@@ -781,7 +781,7 @@ function setQuickReplies(options) {
 function getQuickReplies(botText) {
   const t = botText.toLowerCase();
   if (t.includes('type of business') || t.includes('business do you')) return ['Salon/Shop','Restaurant','Clinic','E-Commerce','Portfolio','Other'];
-  if (t.includes('plan') && (t.includes('basic') || t.includes('classic') || t.includes('premium'))) return ['Basic ₹3,333','Classic ₹4,444','Premium ₹6,666','Tell me more'];
+  if (t.includes('plan') && (t.includes('basic') || t.includes('classic') || t.includes('premium'))) return ['Basic ₹4,990','Classic ₹5,990','Premium ₹7,990','Tell me more'];
   if (t.includes('feature') || t.includes('page') || t.includes('need')) return ['WhatsApp + Maps','Online Booking','Payment Gateway','Product Catalog','All of the above'];
   if (t.includes('callback') || t.includes('call you') || t.includes('30 min')) return ['Sounds great!','I have more questions'];
   return [];
@@ -1039,9 +1039,9 @@ function submitLeadModal(e) {
         <label class="block text-xs font-black uppercase mb-1">Interested Plan</label>
         <select id="lead-plan" class="w-full border-4 border-black p-3 font-bold outline-none bg-white">
           <option value="Not decided">Not decided yet</option>
-          <option value="Basic Plan - ₹3333">Basic Plan — ₹3,333</option>
-          <option value="Classic Plan - ₹4444">Classic Plan — ₹4,444</option>
-          <option value="Premium Plan - ₹6666">Premium Plan — ₹6,666</option>
+          <option value="Basic Plan - ₹4990">Basic Plan — ₹4,990</option>
+          <option value="Classic Plan - ₹5990">Classic Plan — ₹5,990</option>
+          <option value="Premium Plan - ₹7990">Premium Plan — ₹7,990</option>
         </select>
       </div>
       <div id="lead-error" class="hidden bg-red-100 border-2 border-red-500 text-red-700 text-xs font-black px-3 py-2"></div>
