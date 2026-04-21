@@ -972,13 +972,14 @@ function closeLeadModal() {
   document.getElementById('lead-form').reset();
   document.getElementById('lead-error').classList.add('hidden');
 }
-function submitLeadModal(e) {
+async function submitLeadModal(e) {
   e.preventDefault();
   const name     = document.getElementById('lead-name').value.trim();
   const phone    = document.getElementById('lead-phone').value.trim();
   const business = document.getElementById('lead-business').value;
   const plan     = document.getElementById('lead-plan').value;
   const errEl    = document.getElementById('lead-error');
+  const submitBtn = document.getElementById('lead-submit-btn');
 
   const cleaned = phone.replace(/\D/g, '');
   if (!/^[6-9]\d{9}$/.test(cleaned)) {
@@ -988,11 +989,25 @@ function submitLeadModal(e) {
   }
   errEl.classList.add('hidden');
 
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'SENDING...';
+
+  try {
+    await fetch('https://rocketloom.onrender.com/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, phone: cleaned, plan, message: business, source: 'get_your_site' })
+    });
+  } catch {}
+
   const msg = `Hi Rocketloom! 🚀\n\nName: ${name}\nPhone: ${cleaned}\nBusiness: ${business}\nInterested in: ${plan}\n\nPlease get in touch!`;
   const waUrl = `https://wa.me/919911134078?text=${encodeURIComponent(msg)}`;
   window.open(waUrl, '_blank');
   closeLeadModal();
   showToast("Opening WhatsApp — we'll call you in 30 mins!");
+
+  submitBtn.disabled = false;
+  submitBtn.textContent = 'Send via WhatsApp →';
 }
 </script>
 
@@ -1045,7 +1060,7 @@ function submitLeadModal(e) {
         </select>
       </div>
       <div id="lead-error" class="hidden bg-red-100 border-2 border-red-500 text-red-700 text-xs font-black px-3 py-2"></div>
-      <button type="submit" class="neo-brutal-btn w-full font-headline font-black py-4 text-lg uppercase italic mt-2">
+      <button id="lead-submit-btn" type="submit" class="neo-brutal-btn w-full font-headline font-black py-4 text-lg uppercase italic mt-2">
         Send via WhatsApp →
       </button>
       <p class="text-center text-[10px] font-bold text-black/40 uppercase">Your info is safe. No spam, ever.</p>
