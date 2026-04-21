@@ -85,9 +85,9 @@ function nvidiaChat(messages) {
 const SYSTEM_PROMPT = `You are Rocket 🚀, an enthusiastic and friendly AI sales assistant for Rocketloom — Delhi's #1 professional web development studio. Your goal is to have a natural, helpful conversation to understand what the user needs, recommend the right plan, and collect their contact details.
 
 ROCKETLOOM PLANS:
-- Basic Plan ₹3,333 (one-time) + ₹1,399/yr renewal: 10-page dynamic website, 1 free domain, business email, WhatsApp integration, AI chatbot, 24/7 support
-- Classic Plan ₹4,444 (one-time) + ₹1,890/yr renewal: 15-page website, unlimited images & videos, payment gateway, all Basic features, 24/7 support
-- Premium Plan ₹6,666 (one-time) + ₹2,090/yr renewal: 20-page website, unlimited email IDs, cPanel access, all Classic features, priority 12-hr support
+- Basic Plan ₹4,990 (one-time): 5-page website, images & videos, bandwidth/storage, 100% responsive, live chat, social media & WhatsApp integration, 1 revision — delivery in 48 hours
+- Classic Plan ₹5,990 (one-time): 10-page website, AI chatbot (LLM), Razorpay/payment integration, social media + WhatsApp, 2 revisions — delivery in 24 hours
+- Premium Plan ₹7,990 (one-time): 15-page website, advanced features, 4 revisions — delivery in 24 hours
 
 ADD-ONS: Extra page ₹200-500 | E-commerce ₹1,500 | Custom dashboard ₹1,300 | SEO ₹2,999/mo | WhatsApp automation ₹400 | AI bot ₹799
 
@@ -106,7 +106,7 @@ STRICT RULES:
 - When you have BOTH name AND phone number from the user, append this JSON on a new line at the very end of your message (do NOT show it to user, it will be hidden): {"__lead__":true,"name":"THEIR_NAME","phone":"THEIR_PHONE","plan":"RECOMMENDED_PLAN"}
 - Only append the JSON once, when you have both name and phone confirmed`;
 
-app.use(cors({ origin: ['https://rocketloomak.netlify.app', 'http://localhost:3000'] }));
+app.use(cors({ origin: ['https://glowing-chimera-68bf58.netlify.app', 'http://localhost:3000'] }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../frontend')));
 
