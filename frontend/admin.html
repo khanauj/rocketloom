@@ -85,13 +85,17 @@
 </div>
 
 <script>
+const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? `${window.location.protocol}//${window.location.hostname}:3000`
+  : 'https://rocketloom.onrender.com';
+
 let password = '';
 let allLeads = [];
 
 function login() {
   password = document.getElementById('pass-input').value;
   const btn = document.getElementById('login-btn');
-  btn.textContent = 'CONNECTING...';
+  btn.textContent = 'LOADING…';
   btn.disabled = true;
   loadData().finally(() => { btn.textContent = 'LOGIN →'; btn.disabled = false; });
 }
@@ -106,13 +110,14 @@ async function loadData() {
   const errEl = document.getElementById('login-err');
   errEl.classList.add('hidden');
   let leadsRes, statsRes;
+
   try {
     [leadsRes, statsRes] = await Promise.all([
-      fetch(`https://rocketloom.onrender.com/api/leads?pass=${password}`),
-      fetch(`https://rocketloom.onrender.com/api/stats?pass=${password}`)
+      fetch(`${API}/api/leads?pass=${password}`),
+      fetch(`${API}/api/stats?pass=${password}`)
     ]);
   } catch {
-    errEl.textContent = 'Cannot reach server. Render may be waking up — wait 30s and try again.';
+    errEl.innerHTML = 'Could not connect to server.<br><button onclick="login()" style="margin-top:8px;background:#000;color:#fff;padding:6px 14px;font-weight:900;font-size:11px;border:none;cursor:pointer;letter-spacing:1px;">↻ RETRY</button>';
     errEl.classList.remove('hidden');
     return;
   }
@@ -169,7 +174,7 @@ function renderTable() {
 
 async function deleteLead(id) {
   if (!confirm('Delete this lead?')) return;
-  await fetch(`https://rocketloom.onrender.com/api/leads/${id}?pass=${password}`, { method: 'DELETE' });
+  await fetch(`${API}/api/leads/${id}?pass=${password}`, { method: 'DELETE' });
   allLeads = allLeads.filter(l => l.id !== id);
   renderTable();
 }
